@@ -5,10 +5,15 @@ import Image from 'next/image'
 
 export function Header() {
     return(
-        <div className="min-w-screen py-2"
+        <div className="min-w-screen py-2 "
         style={{
-            backgroundImage: `url(${headerbg.src})`,
-            
+        backgroundImage: `
+          linear-gradient(
+            rgba(206, 127, 0, 0.7),
+            rgba(206, 127, 0, 0.7)
+          ),
+          url(${headerbg.src})
+        `
         }}
         >
             <div className="mx-10">     
