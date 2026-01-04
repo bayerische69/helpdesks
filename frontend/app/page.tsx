@@ -18,6 +18,10 @@ import {
 } from "@/components/ui/table"
 import { useState } from "react";
 import Modal from "./components/Modal";
+import { Select } from "@radix-ui/react-select";
+import { DateTimePicker } from "./components/DateTimePicker";
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -128,21 +132,90 @@ export default function Home() {
           onClose={() => setOpen(false)}
           title="Submit A Ticket"
         >
-          <form action="">
+          <form>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {/* Select for users */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">User</label>
+                <select
+                  className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select a user
+                  </option>
+                  <option value="1">John Doe</option>
+                  <option value="2">Jane Smith</option>
+                  <option value="3">Alex Johnson</option>
+                </select>
+              </div>
 
-            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Email</label>
+                <Input type="email" placeholder="Enter your Email" />
+              </div>
+            </div>
 
-            <div className="form-control mb-2">
-              <label htmlFor="" >Full Name</label>
-              <Input type="text" placeholder="Full Name" />
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Priority Status</label>
+                <select
+                  className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select a Priority Status
+                  </option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Urgent">Urgent</option>
+                </select>              
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Category</label>
+                <select
+                  className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select a category
+                  </option>
+                  <option value="Software">Software</option>
+                  <option value="Hardware">Hardware</option>
+
+                </select>              
+              </div>              
             </div>
             
-            <div className="form-control mb-2">
-              <label htmlFor="">Email</label>
-              <Input type="text" placeholder="Full Name" />
-            </div>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Division</label>
+                <select
+                  className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select a Division
+                  </option>
+                  <option value="PSD">PSD</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="SUPPLY">SUPPLY</option>
+                  <option value="RECORDS">RECORDS</option>
+                  <option value="RECORDS">ARCHIVES</option>
+                </select>              
+              </div>
+
+              {/* datetime picker */}
+              <DateTimePicker />
+
             </div>
 
+
+            <div className="grid w-full gap-3">
+              <Label htmlFor="message">Description</Label>
+              <Textarea placeholder="Enter details here" id="message" />
+            </div>
 
 
           </form>

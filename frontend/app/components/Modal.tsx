@@ -34,7 +34,7 @@ export default function Modal({isOpen, onClose, title, children}:ModalProps) {
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative z-10 w-full max-w-5xl  rounded-lg bg-white p-6 shadow-lg">
         {title && (
           <h2 className="mb-4 text-lg font-semibold">{title}</h2>
         )}
