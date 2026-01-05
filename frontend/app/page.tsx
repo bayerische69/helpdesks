@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [editModal, setEditModal] = useState(false)
 
   return (
     <div className="max-width ">
@@ -101,14 +102,13 @@ export default function Home() {
         <div className="w-full h-full">
           <Table>
             {/* <TableCaption>A list of your submitted tickets.</TableCaption> */}
-            <TableHeader className="bg-[#E3B32A] font-bold mb-2">
-              <TableRow >
-                <TableHead >Ticket No.</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Division</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+            <TableHeader className="bg-[#E3B32A] mb-2">
+              <TableRow  >
+                <TableHead className="font-bold">Ticket No.</TableHead>
+                <TableHead className="font-bold">Full Name</TableHead>
+                <TableHead className="font-bold">Division</TableHead>
+                <TableHead className="font-bold">Category</TableHead>
+                <TableHead className="font-bold">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="border-b border-b-[#E3B32A]">
@@ -118,11 +118,10 @@ export default function Home() {
                 <TableCell>PSD</TableCell>
                 <TableCell >Software</TableCell>
                 <TableCell >Ongoing</TableCell>
-                <TableCell className="flex justify-end items-center gap-5">
-                  <Pencil color="#E3B32A" /> <span><Trash2 color="red" /></span>
-                </TableCell>
+
               </TableRow>
             </TableBody>
+            
           </Table>
         </div>
 
@@ -219,6 +218,16 @@ export default function Home() {
 
 
           </form>
+        </Modal>
+
+
+        <Modal
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+          title="Edit A Ticket">
+            hello
+
+
         </Modal>
 
       </div>
