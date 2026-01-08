@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export function Header() {
     return(
-        <div className="min-w-screen py-2 "
+        <div className="sm:w-full  py-2 "
         style={{
         backgroundImage: `
           linear-gradient(
@@ -16,7 +16,7 @@ export function Header() {
         `
         }}
         >
-            <div className="mx-10">     
+            <div className="mx-0 text-center md:mx-10 md:text-left">     
                 <h1 className='text-lg font-bold'>CGSO Internal HelpDesks</h1> 
             </div>
         </div>
