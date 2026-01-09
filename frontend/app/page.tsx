@@ -127,104 +127,123 @@ export default function Home() {
         onClose={() => setOpen(false)}
         title="Submit A Ticket"
       >
-        <form>
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            {/* Select for users */}
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">User</label>
-              <select
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Select a user
-                </option>
-                <option value="1">John Doe</option>
-                <option value="2">Jane Smith</option>
-                <option value="3">Alex Johnson</option>
-              </select>
-            </div>
+<form className="w-full">
+  {/* Row 1 */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1">User</label>
+      <select
+        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select a user
+        </option>
+        <option value="1">John Doe</option>
+        <option value="2">Jane Smith</option>
+        <option value="3">Alex Johnson</option>
+      </select>
+    </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Email</label>
-              <Input type="email" placeholder="Enter your Email" />
-            </div>
-          </div>
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1">Email</label>
+      <Input type="email" placeholder="Enter your Email" />
+    </div>
+  </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Priority Status</label>
-              <select
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Select a Priority Status
-                </option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Urgent">Urgent</option>
-              </select>              
-            </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Category</label>
-              <select
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Select a category
-                </option>
-                <option value="Software">Software</option>
-                <option value="Hardware">Hardware</option>
+  {/* Row 2 */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1">Priority Status</label>
+      <select
+        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select a Priority Status
+        </option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+        <option value="Urgent">Urgent</option>
+      </select>
+    </div>
 
-              </select>              
-            </div>              
-          </div>
-          
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-1">Division</label>
-              <select
-                className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Select a Division
-                </option>
-                <option value="PSD">PSD</option>
-                <option value="ADMIN">ADMIN</option>
-                <option value="SUPPLY">SUPPLY</option>
-                <option value="RECORDS">RECORDS</option>
-                <option value="RECORDS">ARCHIVES</option>
-              </select>              
-            </div>
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1">Category</label>
+      <select
+        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select a category
+        </option>
+        <option value="Software">Software</option>
+        <option value="Hardware">Hardware</option>
+      </select>
+    </div>
+  </div>
 
-            {/* datetime picker */}
-            <DateTimePicker />
+  {/* Row 3 */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div className="flex flex-col">
+      <label className="text-sm font-medium mb-1">Division</label>
+      <select
+        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select a Division
+        </option>
+        <option value="PSD">PSD</option>
+        <option value="ADMIN">ADMIN</option>
+        <option value="SUPPLY">SUPPLY</option>
+        <option value="RECORDS">RECORDS</option>
+        <option value="ARCHIVES">ARCHIVES</option>
+      </select>
+    </div>
 
-          </div>
+    <div className="flex flex-col">
+      <DateTimePicker />
+    </div>
+  </div>
 
+  {/* Description */}
+  <div className="w-full mb-4">
+    <Label htmlFor="message">Description</Label>
+    <Textarea
+      placeholder="Enter details here"
+      id="message"
+      className="mt-1"
+    />
+  </div>
 
-          <div className="grid w-full gap-3 mb-3">
-            <Label htmlFor="message">Description</Label>
-            <Textarea placeholder="Enter details here" id="message" />
-          </div>
+  {/* Buttons */}
+  <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+    <Button
+      variant="outline"
+      className="bg-[#BF092F] text-white w-full sm:w-auto"
+      onClick={(e) => {
+        e.preventDefault()
+        console.log("cancel")
+      }}
+    >
+      Cancel
+    </Button>
 
+    <Button
+      variant="outline"
+      className="bg-[#4988C4] text-white w-full sm:w-auto"
+      onClick={(e) => {
+        e.preventDefault()
+        console.log("submitted")
+      }}
+    >
+      Submit
+    </Button>
+  </div>
+</form>
 
-          <div className="flex justify-end">
-            <Button variant="outline" className="bg-[#BF092F] text-white " onClick={(e) => {
-              e.preventDefault()
-              console.log("cancel")
-            }}>Cancel</Button>            
-            <Button variant="outline" className="bg-[#4988C4] text-white " onClick={(e) => {
-              e.preventDefault()
-              console.log("submitted")
-            }}>Submit</Button>
-          </div>
-
-        </form>
       </Modal>
     </div>
   );

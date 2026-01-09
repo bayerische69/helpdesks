@@ -7,7 +7,7 @@ const dashboard = () => {
     <div className='w-full h-full'>
         <AdminHeader />
 
-        <div className="xl:mx-50 xl:my-15">
+        {/* <div className="xl:mx-50 xl:my-15">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             
@@ -48,7 +48,7 @@ const dashboard = () => {
 
         <div className='xl:mx-50 xl:my-15'> 
          <ChartAreaInteractive />
-        </div>
+        </div> */}
 
     </div>
   )
