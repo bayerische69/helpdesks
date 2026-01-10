@@ -28,6 +28,53 @@ import {
 
 export const description = "An interactive area chart"
 
+const chartDataSample = [
+  { date: "2026-03-14", PSD: 2, ADMIN: 4, SUPPLY: 1, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-07-22", PSD: 1, ADMIN: 2, SUPPLY: 3, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-01-05", PSD: 3, ADMIN: 1, SUPPLY: 2, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-11-18", PSD: 4, ADMIN: 3, SUPPLY: 1, RECORDS: 2, ARCHIVES: 1 },
+  { date: "2026-06-09", PSD: 2, ADMIN: 1, SUPPLY: 4, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-02-27", PSD: 1, ADMIN: 3, SUPPLY: 2, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-09-03", PSD: 4, ADMIN: 2, SUPPLY: 1, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-12-15", PSD: 2, ADMIN: 4, SUPPLY: 3, RECORDS: 1, ARCHIVES: 2 },
+  { date: "2026-04-21", PSD: 3, ADMIN: 1, SUPPLY: 2, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-08-30", PSD: 1, ADMIN: 3, SUPPLY: 4, RECORDS: 2, ARCHIVES: 2 },
+
+  { date: "2026-05-12", PSD: 4, ADMIN: 2, SUPPLY: 1, RECORDS: 3, ARCHIVES: 1 },
+  { date: "2026-10-07", PSD: 2, ADMIN: 1, SUPPLY: 3, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-03-25", PSD: 1, ADMIN: 4, SUPPLY: 2, RECORDS: 3, ARCHIVES: 1 },
+  { date: "2026-07-01", PSD: 3, ADMIN: 2, SUPPLY: 1, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-01-19", PSD: 4, ADMIN: 1, SUPPLY: 3, RECORDS: 2, ARCHIVES: 1 },
+  { date: "2026-11-02", PSD: 2, ADMIN: 3, SUPPLY: 4, RECORDS: 1, ARCHIVES: 2 },
+  { date: "2026-06-17", PSD: 1, ADMIN: 2, SUPPLY: 3, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-09-28", PSD: 3, ADMIN: 4, SUPPLY: 1, RECORDS: 2, ARCHIVES: 2 },
+  { date: "2026-12-06", PSD: 4, ADMIN: 2, SUPPLY: 3, RECORDS: 1, ARCHIVES: 1 },
+  { date: "2026-04-10", PSD: 2, ADMIN: 1, SUPPLY: 4, RECORDS: 3, ARCHIVES: 2 },
+
+  { date: "2026-05-26", PSD: 1, ADMIN: 3, SUPPLY: 2, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-08-13", PSD: 4, ADMIN: 2, SUPPLY: 1, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-10-29", PSD: 2, ADMIN: 4, SUPPLY: 3, RECORDS: 1, ARCHIVES: 2 },
+  { date: "2026-03-08", PSD: 3, ADMIN: 1, SUPPLY: 2, RECORDS: 4, ARCHIVES: 1 },
+  { date: "2026-07-19", PSD: 1, ADMIN: 3, SUPPLY: 4, RECORDS: 2, ARCHIVES: 2 },
+  { date: "2026-01-30", PSD: 4, ADMIN: 2, SUPPLY: 1, RECORDS: 3, ARCHIVES: 1 },
+  { date: "2026-11-23", PSD: 2, ADMIN: 1, SUPPLY: 3, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-06-02", PSD: 3, ADMIN: 4, SUPPLY: 2, RECORDS: 1, ARCHIVES: 1 },
+  { date: "2026-09-15", PSD: 1, ADMIN: 2, SUPPLY: 4, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-12-29", PSD: 4, ADMIN: 3, SUPPLY: 1, RECORDS: 2, ARCHIVES: 1 },
+
+  { date: "2026-04-04", PSD: 2, ADMIN: 1, SUPPLY: 3, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-05-18", PSD: 3, ADMIN: 4, SUPPLY: 2, RECORDS: 1, ARCHIVES: 1 },
+  { date: "2026-08-07", PSD: 1, ADMIN: 2, SUPPLY: 4, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-10-11", PSD: 4, ADMIN: 3, SUPPLY: 1, RECORDS: 2, ARCHIVES: 1 },
+  { date: "2026-02-14", PSD: 2, ADMIN: 1, SUPPLY: 3, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-07-27", PSD: 3, ADMIN: 4, SUPPLY: 2, RECORDS: 1, ARCHIVES: 1 },
+  { date: "2026-11-10", PSD: 1, ADMIN: 2, SUPPLY: 4, RECORDS: 3, ARCHIVES: 2 },
+  { date: "2026-03-02", PSD: 4, ADMIN: 3, SUPPLY: 1, RECORDS: 2, ARCHIVES: 1 },
+  { date: "2026-06-25", PSD: 2, ADMIN: 1, SUPPLY: 3, RECORDS: 4, ARCHIVES: 2 },
+  { date: "2026-09-09", PSD: 3, ADMIN: 4, SUPPLY: 2, RECORDS: 1, ARCHIVES: 1 }
+];
+
+
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
@@ -123,144 +170,158 @@ const chartData = [
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  PSD: {
+    label: "PSD",
+    color: "#6366f1", // Indigo
   },
-  desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
+  ADMIN: {
+    label: "ADMIN",
+    color: "#22c55e", // Green
   },
-  mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
+  SUPPLY: {
+    label: "SUPPLY",
+    color: "#f59e0b", // Amber
   },
-} satisfies ChartConfig
+  RECORDS: {
+    label: "RECORDS",
+    color: "#ef4444", // Red
+  },
+  ARCHIVES: {
+    label: "ARCHIVES",
+    color: "#06b6d4", // Cyan
+  },
+};
 
 export function ChartAreaInteractive() {
   const [timeRange, setTimeRange] = React.useState("90d")
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
+
+  const monthlyData = Object.values(
+  chartDataSample.reduce((acc: Record<string, { month: string; PSD: number; ADMIN: number; SUPPLY: number; RECORDS: number; ARCHIVES: number }>, item) => {
+    const monthKey = item.date.slice(0, 7); // YYYY-MM
+
+    if (!acc[monthKey]) {
+      acc[monthKey] = {
+        month: monthKey,
+        PSD: 0,
+        ADMIN: 0,
+        SUPPLY: 0,
+        RECORDS: 0,
+        ARCHIVES: 0,
+      };
     }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+
+    acc[monthKey].PSD += item.PSD;
+    acc[monthKey].ADMIN += item.ADMIN;
+    acc[monthKey].SUPPLY += item.SUPPLY;
+    acc[monthKey].RECORDS += item.RECORDS;
+    acc[monthKey].ARCHIVES += item.ARCHIVES;
+
+    return acc;
+  }, {})
+).sort((a, b) => a.month.localeCompare(b.month));
+
 
   return (
     <Card className="pt-0">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle>Analytics for Internal Helpdesks</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            Showing total tickets for every division
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger
-            className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
-            aria-label="Select a value"
-          >
-            <SelectValue placeholder="Last 3 months" />
-          </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
-            </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
-            </SelectItem>
-          </SelectContent>
-        </Select>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={filteredData}>
-            <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
+
+ 
+    <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-auto h-[250px] w-full"
+        style={{
+          "--color-psd": chartConfig.PSD.color,
+          "--color-admin": chartConfig.ADMIN.color,
+          "--color-supply": chartConfig.SUPPLY.color,
+          "--color-records": chartConfig.RECORDS.color,
+          "--color-archives": chartConfig.ARCHIVES.color,
+        } as React.CSSProperties}
+      >
+        <AreaChart data={monthlyData}>
+          <CartesianGrid vertical={false} />
+
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={(value) =>
+              new Date(value + "-01").toLocaleDateString("en-US", {
+                month: "short",
+                year: "numeric",
+              })
+            }
+          />
+
+          <ChartTooltip
+            cursor={false}
+            content={
+              <ChartTooltipContent
+                labelFormatter={(value) =>
+                  new Date(value + "-01").toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })
+                }
+                indicator="dot"
+              />
+            }
+          />
+
+          <Area
+            dataKey="PSD"
+            type="natural"
+            stackId="a"
+            fill="var(--color-psd)"
+            stroke="var(--color-psd)"
+          />
+
+          <Area
+            dataKey="ADMIN"
+            type="natural"
+            stackId="a"
+            fill="var(--color-admin)"
+            stroke="var(--color-admin)"
+          />
+
+          <Area
+            dataKey="SUPPLY"
+            type="natural"
+            stackId="a"
+            fill="var(--color-supply)"
+            stroke="var(--color-supply)"
+          />
+
+          <Area
+            dataKey="RECORDS"
+            type="natural"
+            stackId="a"
+            fill="var(--color-records)"
+            stroke="var(--color-records)"
+          />
+
+          <Area
+            dataKey="ARCHIVES"
+            type="natural"
+            stackId="a"
+            fill="var(--color-archives)"
+            stroke="var(--color-archives)"
+          />
+
+          <ChartLegend content={<ChartLegendContent />} />
+        </AreaChart>
+      </ChartContainer>
+    </CardContent>
+
     </Card>
   )
 }

@@ -55,7 +55,7 @@ const AdminHeader = () => {
               className={`
                 flex items-center gap-1 text-white px-3 py-1 rounded-md text-sm
                 ${item.color}
-                ${pathname === item.path ? "ring-2 ring-white" : ""}
+                ${pathname === item.path ? "ring-2 ring-amber-700" : ""}
               `}
             >
               {item.icon}

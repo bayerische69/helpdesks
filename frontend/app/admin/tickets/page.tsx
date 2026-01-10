@@ -5,6 +5,9 @@ const tickets = () => {
   return (
     <div>
       <AdminHeader/>
+
+      
+
     </div>
   )
 }
