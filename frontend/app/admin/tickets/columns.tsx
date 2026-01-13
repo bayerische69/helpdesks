@@ -1,9 +1,8 @@
-"use client"
+'use client'
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
 import { MoreHorizontal } from "lucide-react"
-
+ 
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -13,107 +12,94 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+ 
 
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
+export type Tickets = {
+    id: string,
+    userID: string,
+    email: string,
+    priorityStatus: "Low" | "Medium" | "High" | "Urgent",
+    division: "PSD" | "ADMIN" | "SUPPLY" | "RECORDS" | "ARCHIVES"
+    category: "Software Issue" | "Hardware Issue",
+    scheduleDateTime: Date,
+    description: string,
+    ticketStatus: "Pending" | "In Progress" | "Closed - Referred to CMISID" | "Closed - Resolved",
 }
 
-
-
-export const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+export const columns: ColumnDef<Tickets>[] = [
+    {
+        accessorKey: "id",
+        header: "ID",
+    },
+    {
+        accessorKey: "userID",
+        header: "Full Name"
+    },
+    {
+        accessorKey: "email",
+        header: "Email"
+    },
+    {
+        accessorKey: "priorityStatus",
+        header: "Priority Status"
+    },
+    {
+        accessorKey: "division",
+        header: "Division"
+    },
+    {
+        accessorKey: "category",
+        header: "Category"
+    },
+    {
+    accessorKey: "scheduleDateTime",
+    header: "Schedule Date & Time",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
+        const value = row.getValue("scheduleDateTime") as string | Date
 
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-    {
-    id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original
+        if (!value) return "-"
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+        const date = new Date(value)
+
+        return new Intl.DateTimeFormat("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        }).format(date)
     },
-  },
-    {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
     },
-  },
     {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+        accessorKey: "description",
+        header: "Description"
+    },
+    {
+        accessorKey: "ticketStatus",
+        header: "Status"
+    },
+    {
+        id: "actions",
+        cell: ({row}) => {
+            const ticket = row.original
+
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild >
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" >
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(ticket.id)}>
+                        Copy ticket ID
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>View Customer</DropdownMenuItem>
+                        <DropdownMenuItem>View Ticket Details</DropdownMenuItem>
+
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+    }
 ]
