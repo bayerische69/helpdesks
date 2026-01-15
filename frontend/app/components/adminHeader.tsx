@@ -53,7 +53,7 @@ const AdminHeader = () => {
               key={item.name}
               onClick={() => router.push(item.path)}
               className={`
-                flex items-center gap-1 text-white px-3 py-1 rounded-md text-sm
+                flex items-center gap-1 text-white px-3 py-1 rounded-md text-sm cursor-pointer
                 ${item.color}
                 ${pathname === item.path ? "ring-2 ring-amber-700" : ""}
               `}
