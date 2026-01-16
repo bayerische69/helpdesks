@@ -50,8 +50,6 @@ export default function Modal({isOpen, onClose, title, children}:ModalProps) {
         )}
 
         <div>{children}</div>
-
-
       </div>
     </div>
     )
