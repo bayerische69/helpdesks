@@ -11,6 +11,8 @@ const AdminHeader = () => {
   const router = useRouter()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const [showNotif, setShowNotif] = useState(false)
+  const [showMobileNotif, setShowMobileNotif] = useState(false)
 
   const navItems = [
     {
@@ -63,16 +65,58 @@ const AdminHeader = () => {
             </button>
           ))}
 
-          {/* Notification */}
-          <div
+        {/* Notification */}
+        <div className="relative mt-2">
+
+          <button
+            onClick={() => setShowNotif(!showNotif)}
             className="relative cursor-pointer"
-            onClick={() => router.push("/admin/notifications")}
           >
             <Bell className="text-red-600" />
+
             <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
               3
             </span>
-          </div>
+          </button>
+
+          {/* Dropdown */}
+          {showNotif && (
+            <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-3 z-50">
+
+              <h3 className="text-sm font-semibold mb-2">
+                Notifications
+              </h3>
+
+              <div className="space-y-2">
+
+                <div className="text-xs bg-gray-100 p-2 rounded">
+                  📌 New ticket assigned
+                </div>
+
+                <div className="text-xs bg-gray-100 p-2 rounded">
+                  ✅ Ticket #102 resolved
+                </div>
+
+                <div className="text-xs bg-gray-100 p-2 rounded">
+                  ⚠ System update scheduled
+                </div>
+
+              </div>
+
+              <button
+                onClick={() => {
+                  router.push("/admin/notifications")
+                  setShowNotif(false)
+                }}
+                className="w-full mt-3 text-xs text-blue-600 hover:underline"
+              >
+                View all notifications
+              </button>
+
+            </div>
+          )}
+        </div>
+
 
         </div>
 
@@ -108,16 +152,43 @@ const AdminHeader = () => {
           ))}
 
           {/* Mobile Notification */}
-          <button
-            onClick={() => {
-              router.push("/admin/notifications")
-              setIsOpen(false)
-            }}
-            className="w-full flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-md text-sm"
-          >
-            <Bell size={16} />
-            Notifications (3)
-          </button>
+          <div className="space-y-2">
+
+            <button
+              onClick={() => setShowMobileNotif(!showMobileNotif)}
+              className="w-full flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-md text-sm"
+            >
+              <Bell size={16} />
+              Notifications (3)
+            </button>
+
+            {showMobileNotif && (
+              <div className="bg-white rounded-lg p-3 space-y-2 text-xs">
+
+                <div className="bg-gray-100 p-2 rounded">
+                  📌 New ticket assigned
+                </div>
+
+                <div className="bg-gray-100 p-2 rounded">
+                  ✅ Ticket #102 resolved
+                </div>
+
+                <div className="bg-gray-100 p-2 rounded">
+                  ⚠ System update scheduled
+                </div>
+
+                <button
+                  onClick={() => {
+                    router.push("/admin/notifications")
+                    setIsOpen(false)
+                  }}
+                  className="w-full text-blue-600 text-xs mt-2 hover:underline"
+                >
+                  View all notifications
+                </button>
+              </div>
+            )}
+          </div>
 
         </div>
       )}

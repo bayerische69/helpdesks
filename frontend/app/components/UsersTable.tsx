@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Input } from '@/components/ui/input'
 
 const Users = [
   { fullName: "John Doe" },
@@ -130,7 +131,42 @@ const UsersTable = () => {
         onClose={() => setOpen(false)}
         title='Add User'>
 
-            Sample
+                  
+        <form className="w-full">
+          {/* Row 1 */}
+
+            <div className="flex flex-col mb-3">
+              <label className="text-sm font-medium mb-2">Full Name
+              </label>
+              <Input type="text" placeholder="Enter Full Name" />
+            </div>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+            <Button
+              variant="outline"
+              className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault()
+                setOpen(false)
+              }}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="outline"
+              className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault()
+                alert("Submitted Successfully")
+                setOpen(false)
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </form>
 
 
         </Modal>
