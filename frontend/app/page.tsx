@@ -16,16 +16,40 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./components/Modal";
 import { DateTimePicker } from "./components/DateTimePicker";
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label";
+import axios from "./config/axios";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
-  const [editModal, setEditModal] = useState(false)
 
+  const [ticket, setTicket] = useState({
+    userID: "",
+    email: "",
+    priorityStatus: "",
+    category: "",
+    division: "",
+    dateTime: "",
+    description: ""
+  });
+
+  const [users, setUsers] = useState<{ id: string; fullName: string }[]>([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await axios.get("/users");
+        setUsers(res.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    getUsers();
+  }, []);
   return (
     <div className="max-width ">
       <Header />
@@ -139,9 +163,11 @@ export default function Home() {
         <option value="" disabled>
           Select a user
         </option>
-        <option value="1">John Doe</option>
-        <option value="2">Jane Smith</option>
-        <option value="3">Alex Johnson</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.fullName}
+            </option>
+          ))}
       </select>
     </div>
 
