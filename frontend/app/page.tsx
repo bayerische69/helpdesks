@@ -32,12 +32,16 @@ export default function Home() {
     priorityStatus: "",
     category: "",
     division: "",
-    dateTime: "",
+    scheduleDateTime: "",
     description: ""
   });
 
 
-  const [users, setUsers] = useState<{ id: string; fullName: string }[]>([]);
+  const [users, setUsers] = useState<{ _id: string; fullName: string }[]>([]);
+
+  const [localTickets, setLocalTickets] = useState<{ data: { _id: string; email: string; division: string; category: string; priorityStatus: string } }[]>([])
+
+  console.log(localTickets)
 
   useEffect(() => {
     const getUsers = async () => {
@@ -49,19 +53,48 @@ export default function Home() {
       }
     };
 
+  const storedTickets = JSON.parse(localStorage.getItem("tickets") || "[]")
+    setLocalTickets(storedTickets)
+
+
     getUsers();
   }, []);
 
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault() // prevent page reload
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
 
-    console.log(ticket) // view submitted data
+    console.log("ticket:",ticket) 
+    
+    try{
+      const res = await axios.post("/tickets", ticket) 
 
+      const storedTickets = JSON.parse(localStorage.getItem("tickets") || "[]")
+      storedTickets.push(res.data)
+      localStorage.setItem("tickets", JSON.stringify(storedTickets))
+
+      // Reset form
+      setTicket({
+        userID: "",
+        email: "",
+        priorityStatus: "",
+        category: "",
+        division: "",
+        scheduleDateTime: "",
+        description: "",
+      })
+
+      alert("Ticket submitted and saved locally!")
+
+    } catch (error) {
+      console.error("Error submitting tickets", error)
+      alert("Failed to submit ticket.")
+
+    }
 
   }
 
-  const handleCancel = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCancel = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
   const confirmCancel = window.confirm(
@@ -76,7 +109,7 @@ export default function Home() {
     priorityStatus: "",
     category: "",
     division: "",
-    dateTime: "",
+    scheduleDateTime: "",
     description: ""      
   })
   }
@@ -160,21 +193,31 @@ export default function Home() {
             <TableHeader className="bg-[#E3B32A]">
               <TableRow  >
                 <TableHead className="font-bold">Ticket No.</TableHead>
-                <TableHead className="font-bold">Full Name</TableHead>
+                <TableHead className="font-bold">Email</TableHead>
                 <TableHead className="font-bold">Division</TableHead>
                 <TableHead className="font-bold">Category</TableHead>
                 <TableHead className="font-bold">Status</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="border-b border-b-[#E3B32A]">
-              <TableRow >
-                <TableCell className="font-medium">e3123123</TableCell>
-                <TableCell>John Doe</TableCell>
-                <TableCell>PSD</TableCell>
-                <TableCell >Software</TableCell>
-                <TableCell >Ongoing</TableCell>
 
-              </TableRow>
+            <TableBody className="border-b border-b-[#E3B32A]">
+              {localTickets.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No tickets found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                localTickets.map((ticket, index) => (
+                  <TableRow key={ticket.data._id ?? index}>
+                    <TableCell className="font-medium">{ticket.data._id ?? `T-${index + 1}`}</TableCell>
+                    <TableCell>{ticket.data.email}</TableCell>
+                    <TableCell>{ticket.data.division}</TableCell>
+                    <TableCell>{ticket.data.category}</TableCell>
+                    <TableCell>{ticket.data.priorityStatus}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>                
           </Table>
         </div>
@@ -184,163 +227,163 @@ export default function Home() {
         onClose={() => setOpen(false)}
         title="Submit A Ticket"
       >
-<form className="w-full">
-  {/* Row 1 */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-    <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">User</label>
-      <select
-        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={ticket.userID}
-          onChange={(e) => 
-            setTicket({
-              ...ticket, userID: e.target.value
-            })
-          }
-        >
-        <option value="" disabled>
-          Select a user
-        </option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.fullName}
-            </option>
-          ))}
-      </select>
-    </div>
+      <form className="w-full">
+        {/* Row 1 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div className="flex flex-col">
+            <label className="text-sm font-medium mb-1">User</label>
+            <select
+              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={ticket.userID}
+              onChange={(e) => 
+                setTicket({ ...ticket, userID: e.target.value })
+              }
+            >
+              <option value="" disabled>
+                Select a user
+              </option>
 
-    <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Email</label>
-      <Input type="email" placeholder="Enter your Email" value={ticket.email} 
-      onChange={(e) => 
-        setTicket({
-          ...ticket, email: e.target.value
-        })
-      }      
-      />
-    </div>
-  </div>
+              {users.map((user, index) => (
+                <option
+                  key={user._id ?? index} // use index if id is missing
+                  value={user._id}
+                >
+                  {user.fullName}
+                </option>
+              ))}
+            </select>
 
-  {/* Row 2 */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-    <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Priority Status</label>
-      <select
-        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue=""
-        value={ticket.priorityStatus}
-        onChange={(e) => {
-          setTicket({
-            ...ticket, priorityStatus: e.target.value
-          })
-        }}
-      >
-        <option value="" disabled>
-          Select a Priority Status
-        </option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-        <option value="Urgent">Urgent</option>
-      </select>
-    </div>
+          </div>
 
-    <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Category</label>
-      <select
-        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue=""
-        value={ticket.category}
-        onChange={(e) => {
-          setTicket({
-            ...ticket, category: e.target.value
-          })
-        }}
-      >
-        <option value="" disabled>
-          Select a category
-        </option>
-        <option value="Software">Software</option>
-        <option value="Hardware">Hardware</option>
-      </select>
-    </div>
-  </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium mb-1">Email</label>
+            <Input type="email" placeholder="Enter your Email" value={ticket.email} 
+            onChange={(e) => 
+              setTicket({
+                ...ticket, email: e.target.value
+              })
+            }      
+            />
+          </div>
+        </div>
 
-  {/* Row 3 */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-    <div className="flex flex-col">
-      <label className="text-sm font-medium mb-1">Division</label>
-      <select
-        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue=""
-        value={ticket.division}
-        onChange={(e) => {
-          setTicket({
-            ...ticket, division: e.target.value
-          })
-        }}
-      >
-        <option value="" disabled>
-          Select a Division
-        </option>
-        <option value="PSD">PSD</option>
-        <option value="ADMIN">ADMIN</option>
-        <option value="SUPPLY">SUPPLY</option>
-        <option value="RECORDS">RECORDS</option>
-        <option value="ARCHIVES">ARCHIVES</option>
-      </select>
-    </div>
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div className="flex flex-col">
+            <label className="text-sm font-medium mb-1">Priority Status</label>
+            <select
+              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={ticket.priorityStatus}
+              onChange={(e) => {
+                setTicket({
+                  ...ticket, priorityStatus: e.target.value
+                })
+              }}
+            >
+              <option value="" disabled>
+                Select a Priority Status
+              </option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
 
-    <div className="flex flex-col">
-      <DateTimePicker
-        onChange={(d) =>
-          setTicket({
-            ...ticket,
-            dateTime: d.toLocaleString("en-PH", {
-              timeZone: "Asia/Manila"
-            })
-          })
-        }
-      />        
+          <div className="flex flex-col">
+            <label className="text-sm font-medium mb-1">Category</label>
+            <select
+              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={ticket.category}
+              onChange={(e) => {
+                setTicket({
+                  ...ticket, category: e.target.value
+                })
+              }}
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              <option value="Software Issue">Software Issue</option>
+              <option value="Hardware Issue">Hardware Issue</option>
+            </select>
+          </div>
+        </div>
 
-    </div>
-  </div>
+        {/* Row 3 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div className="flex flex-col">
+            <label className="text-sm font-medium mb-1">Division</label>
+            <select
+              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={ticket.division}
+              onChange={(e) => {
+                setTicket({
+                  ...ticket, division: e.target.value
+                })
+              }}
+            >
+              <option value="" disabled>
+                Select a Division
+              </option>
+              <option value="PSD">PSD</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="SUPPLY">SUPPLY</option>
+              <option value="RECORDS">RECORDS</option>
+              <option value="ARCHIVES">ARCHIVES</option>
+            </select>
+          </div>
 
-  {/* Description */}
-  <div className="w-full mb-4">
-    <Label htmlFor="message">Description</Label>
-    <Textarea
-      placeholder="Enter details here"
-      id="message"
-      className="mt-1"
-      value={ticket.description}
-      onChange={(e) => 
-        setTicket({
-          ...ticket, description: e.target.value
-        })
-      }
-    />
-  </div>
+          <div className="flex flex-col">
+            <DateTimePicker
+              onChange={(d) =>
+                setTicket({
+                  ...ticket,
+                  scheduleDateTime: d.toLocaleString("en-PH", {
+                    timeZone: "Asia/Manila"
+                  })
+                })
+              }
+            />        
 
-  {/* Buttons */}
-  <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
-    <Button
-      variant="outline"
-      className="bg-[#BF092F] text-white w-full sm:w-auto"
-      onClick={handleCancel}
-    >
-      Cancel
-    </Button>
+          </div>
+        </div>
 
-    <Button
-      variant="outline"
-      className="bg-[#4988C4] text-white w-full sm:w-auto"
-      onClick={handleSubmit}
-    >
-      Submit
-    </Button>
-  </div>
-</form>
+        {/* Description */}
+        <div className="w-full mb-4">
+          <Label htmlFor="message">Description</Label>
+          <Textarea
+            placeholder="Enter details here"
+            id="message"
+            className="mt-1"
+            value={ticket.description}
+            onChange={(e) => 
+              setTicket({
+                ...ticket, description: e.target.value
+              })
+            }
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+          <Button
+            variant="outline"
+            className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="outline"
+            className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
+        </div>
+      </form>
 
       </Modal>
     </div>
