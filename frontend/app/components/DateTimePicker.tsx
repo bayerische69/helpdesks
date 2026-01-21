@@ -13,30 +13,40 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function DateTimePicker() {
+export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [date, setDate] = React.useState(null)
+  const [time, setTime] = React.useState("10:30:00")
 
-  // ✅ Prevent timezone issues (start of today)
   const today = React.useMemo(() => {
     const d = new Date()
     d.setHours(0, 0, 0, 0)
     return d
   }, [])
 
+  // Combine date + time
+  React.useEffect(() => {
+    if (!date || !time) return
+
+    const [hours, minutes, seconds] = time.split(":")
+    const combined = new Date(date)
+
+    combined.setHours(hours, minutes, seconds || 0)
+
+    onChange?.(combined) // send to parent
+  }, [date, time])
+
   return (
     <div className="flex flex-col sm:flex-row gap-4">
+
       {/* Date Picker */}
       <div className="flex flex-col gap-3">
-        <Label htmlFor="date-picker" className="px-1">
-          Date
-        </Label>
+        <Label>Date</Label>
 
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              id="date-picker"
               className="w-40 justify-between font-normal"
             >
               {date ? date.toLocaleDateString() : "Select date"}
@@ -44,17 +54,13 @@ export function DateTimePicker() {
             </Button>
           </PopoverTrigger>
 
-          <PopoverContent
-            className="w-auto overflow-hidden p-0 bg-white"
-            align="start"
-          >
+          <PopoverContent className="w-auto p-0 bg-white">
             <Calendar
               mode="single"
               selected={date}
-              captionLayout="dropdown"
-              disabled={{ before: today }} // ✅ disable past dates
-              onSelect={(selectedDate) => {
-                setDate(selectedDate)
+              disabled={{ before: today }}
+              onSelect={(d) => {
+                setDate(d)
                 setOpen(false)
               }}
             />
@@ -64,17 +70,12 @@ export function DateTimePicker() {
 
       {/* Time Picker */}
       <div className="flex flex-col gap-3">
-        <Label htmlFor="time-picker" className="px-1">
-          Time
-        </Label>
+        <Label>Time</Label>
         <Input
           type="time"
-          id="time-picker"
           step="1"
-          defaultValue="10:30:00"
-          className="bg-background appearance-none
-            [&::-webkit-calendar-picker-indicator]:hidden
-            [&::-webkit-calendar-picker-indicator]:appearance-none"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
         />
       </div>
     </div>

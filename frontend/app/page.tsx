@@ -36,6 +36,7 @@ export default function Home() {
     description: ""
   });
 
+
   const [users, setUsers] = useState<{ id: string; fullName: string }[]>([]);
 
   useEffect(() => {
@@ -50,6 +51,38 @@ export default function Home() {
 
     getUsers();
   }, []);
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault() // prevent page reload
+
+    console.log(ticket) // view submitted data
+
+
+  }
+
+  const handleCancel = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+  const confirmCancel = window.confirm(
+    "Are you sure you want to clear this form? All entered data will be lost."
+  )
+
+  if (!confirmCancel) return
+
+  setTicket({
+    userID: "",
+    email: "",
+    priorityStatus: "",
+    category: "",
+    division: "",
+    dateTime: "",
+    description: ""      
+  })
+  }
+
+
+
   return (
     <div className="max-width ">
       <Header />
@@ -158,8 +191,13 @@ export default function Home() {
       <label className="text-sm font-medium mb-1">User</label>
       <select
         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue=""
-      >
+          value={ticket.userID}
+          onChange={(e) => 
+            setTicket({
+              ...ticket, userID: e.target.value
+            })
+          }
+        >
         <option value="" disabled>
           Select a user
         </option>
@@ -173,7 +211,13 @@ export default function Home() {
 
     <div className="flex flex-col">
       <label className="text-sm font-medium mb-1">Email</label>
-      <Input type="email" placeholder="Enter your Email" />
+      <Input type="email" placeholder="Enter your Email" value={ticket.email} 
+      onChange={(e) => 
+        setTicket({
+          ...ticket, email: e.target.value
+        })
+      }      
+      />
     </div>
   </div>
 
@@ -184,6 +228,12 @@ export default function Home() {
       <select
         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         defaultValue=""
+        value={ticket.priorityStatus}
+        onChange={(e) => {
+          setTicket({
+            ...ticket, priorityStatus: e.target.value
+          })
+        }}
       >
         <option value="" disabled>
           Select a Priority Status
@@ -200,6 +250,12 @@ export default function Home() {
       <select
         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         defaultValue=""
+        value={ticket.category}
+        onChange={(e) => {
+          setTicket({
+            ...ticket, category: e.target.value
+          })
+        }}
       >
         <option value="" disabled>
           Select a category
@@ -217,6 +273,12 @@ export default function Home() {
       <select
         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         defaultValue=""
+        value={ticket.division}
+        onChange={(e) => {
+          setTicket({
+            ...ticket, division: e.target.value
+          })
+        }}
       >
         <option value="" disabled>
           Select a Division
@@ -230,7 +292,17 @@ export default function Home() {
     </div>
 
     <div className="flex flex-col">
-      <DateTimePicker />
+      <DateTimePicker
+        onChange={(d) =>
+          setTicket({
+            ...ticket,
+            dateTime: d.toLocaleString("en-PH", {
+              timeZone: "Asia/Manila"
+            })
+          })
+        }
+      />        
+
     </div>
   </div>
 
@@ -241,6 +313,12 @@ export default function Home() {
       placeholder="Enter details here"
       id="message"
       className="mt-1"
+      value={ticket.description}
+      onChange={(e) => 
+        setTicket({
+          ...ticket, description: e.target.value
+        })
+      }
     />
   </div>
 
@@ -249,10 +327,7 @@ export default function Home() {
     <Button
       variant="outline"
       className="bg-[#BF092F] text-white w-full sm:w-auto"
-      onClick={(e) => {
-        e.preventDefault()
-        console.log("cancel")
-      }}
+      onClick={handleCancel}
     >
       Cancel
     </Button>
@@ -260,10 +335,7 @@ export default function Home() {
     <Button
       variant="outline"
       className="bg-[#4988C4] text-white w-full sm:w-auto"
-      onClick={(e) => {
-        e.preventDefault()
-        console.log("submitted")
-      }}
+      onClick={handleSubmit}
     >
       Submit
     </Button>
@@ -275,5 +347,3 @@ export default function Home() {
   );
 }
 
-// just add comment im tired
-// another comment for accomplishment only
