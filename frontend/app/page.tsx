@@ -36,10 +36,13 @@ export default function Home() {
     description: ""
   });
 
+  const [error, setError] = useState<string | null>(null);
+
+
 
   const [users, setUsers] = useState<{ _id: string; fullName: string }[]>([]);
 
-  const [localTickets, setLocalTickets] = useState<{ data: { _id: string; email: string; division: string; category: string; priorityStatus: string } }[]>([])
+  const [localTickets, setLocalTickets] = useState<{ data: { _id: string; email: string; division: string; category: string; priorityStatus: string; createdAt: string } }[]>([])
 
   console.log(localTickets)
 
@@ -53,18 +56,34 @@ export default function Home() {
       }
     };
 
-  const storedTickets = JSON.parse(localStorage.getItem("tickets") || "[]")
-    setLocalTickets(storedTickets)
+    const storedTickets = JSON.parse(localStorage.getItem("tickets") || "[]");
 
+    const sortedTickets = [...storedTickets].sort(
+      (a: any, b: any) =>
+        new Date(b.data.createdAt).getTime() -
+        new Date(a.data.createdAt).getTime()
+    );
+
+    setLocalTickets(sortedTickets);
+
+  
 
     getUsers();
   }, []);
+
+  console.log("ticket", localTickets)
 
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     console.log("ticket:",ticket) 
+
+    if (!ticket.userID || !ticket.email || !ticket.priorityStatus || !ticket.category || !ticket.division || !ticket.scheduleDateTime || !ticket.description) {
+      setError("All fields are required");
+      return;
+    }
+
     
     try{
       const res = await axios.post("/tickets", ticket) 
@@ -85,6 +104,8 @@ export default function Home() {
       })
 
       alert("Ticket submitted and saved locally!")
+      setOpen(false)
+      window.location.reload();
 
     } catch (error) {
       console.error("Error submitting tickets", error)
@@ -97,21 +118,23 @@ export default function Home() {
   const handleCancel = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-  const confirmCancel = window.confirm(
-    "Are you sure you want to clear this form? All entered data will be lost."
-  )
+    setError("")
 
-  if (!confirmCancel) return
+    const confirmCancel = window.confirm(
+      "Are you sure you want to clear this form? All entered data will be lost."
+    )
 
-  setTicket({
-    userID: "",
-    email: "",
-    priorityStatus: "",
-    category: "",
-    division: "",
-    scheduleDateTime: "",
-    description: ""      
-  })
+    if (!confirmCancel) return
+
+    setTicket({
+      userID: "",
+      email: "",
+      priorityStatus: "",
+      category: "",
+      division: "",
+      scheduleDateTime: "",
+      description: ""      
+    })
   }
 
 
@@ -196,6 +219,7 @@ export default function Home() {
                 <TableHead className="font-bold">Email</TableHead>
                 <TableHead className="font-bold">Division</TableHead>
                 <TableHead className="font-bold">Category</TableHead>
+                <TableHead className="font-bold">Created At</TableHead>
                 <TableHead className="font-bold">Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -214,6 +238,16 @@ export default function Home() {
                     <TableCell>{ticket.data.email}</TableCell>
                     <TableCell>{ticket.data.division}</TableCell>
                     <TableCell>{ticket.data.category}</TableCell>
+                    <TableCell>
+                      {new Date(ticket.data.createdAt).toLocaleString("en-PH", {
+                        month: "long",
+                        day: "2-digit",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </TableCell>
                     <TableCell>{ticket.data.priorityStatus}</TableCell>
                   </TableRow>
                 ))
@@ -228,6 +262,12 @@ export default function Home() {
         title="Submit A Ticket"
       >
       <form className="w-full">
+
+          {error && (
+            <p className="text-red-500 text-sm mb-3">
+              {error}
+            </p>
+          )}        
         {/* Row 1 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           <div className="flex flex-col">
