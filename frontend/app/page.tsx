@@ -65,15 +65,12 @@ export default function Home() {
     );
 
     setLocalTickets(sortedTickets);
-
-  
-
+    
     getUsers();
   }, []);
 
   console.log("ticket", localTickets)
 
-  // just comment
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()

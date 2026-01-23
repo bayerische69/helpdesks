@@ -14,6 +14,24 @@ export async function getAllTickets(req, res) {
     }
 }
 
+export async function getTicketsByID(req, res) {
+    try {
+        const ticket = await Ticket.findById(req.params.id);
+
+        if (!ticket) {
+            return res.status(404).json({
+                message: "Ticket Not Found"
+            })
+        }
+
+        res.status(200).json(ticket)
+
+    } catch (error) {
+        console.error("Error tickets by id", error.message)
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+}
+
 
 
 export async function createTicket(req, res) {
