@@ -140,7 +140,7 @@ export default function Home() {
     })
   }
 
-  const fetchTicket = async () => {
+  const fetchTicket = async (ticketID: string) => {
     if (!ticketID) return
     // optional but recommended
 
@@ -225,13 +225,24 @@ export default function Home() {
               placeholder="Enter your Ticket Number"
               className="bg-white border-[#CE7F00] rounded-2xl h-10"
               value={ticketID}
-              onChange={(e) => setTicketId(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  fetchTicket()
+              onChange={(e) => {
+                const value = e.target.value
+                setTicketId(value)
+
+                if (value.length === 24) {
+                  fetchTicket(value)
+                } else {
+                  setTicketSearch(null)
+                  setTicketError("")
                 }
               }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                fetchTicket(ticketID)
+              }
+            }}              
             />
+
           </div>
         </div>
       </div>
