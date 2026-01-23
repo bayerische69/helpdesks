@@ -73,6 +73,7 @@ export default function Home() {
 
   console.log("ticket", localTickets)
 
+  // just comment
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
