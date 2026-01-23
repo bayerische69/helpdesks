@@ -35,16 +35,23 @@ export default function Home() {
     scheduleDateTime: "",
     description: ""
   });
-
   const [error, setError] = useState<string | null>(null);
-
-
-
   const [users, setUsers] = useState<{ _id: string; fullName: string }[]>([]);
-
   const [localTickets, setLocalTickets] = useState<{ data: { _id: string; email: string; division: string; category: string; priorityStatus: string; createdAt: string } }[]>([])
-
-  console.log(localTickets)
+  const [ticketID, setTicketId] = useState("")
+  const [ticketSearch, setTicketSearch] = useState<{
+    _id: string;
+    email: string;
+    division: string;
+    category: string;
+    priorityStatus: string;
+    createdAt: string;
+    description: string;
+    scheduleDateTime: string;
+    ticketStatus: string;
+    userID: { fullName: string };
+  } | null>(null)
+  const [ticketError, setTicketError] = useState("")
 
   useEffect(() => {
     const getUsers = async () => {
@@ -65,11 +72,9 @@ export default function Home() {
     );
 
     setLocalTickets(sortedTickets);
-    
+
     getUsers();
   }, []);
-
-  console.log("ticket", localTickets)
 
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,6 +140,29 @@ export default function Home() {
     })
   }
 
+  const fetchTicket = async () => {
+    if (!ticketID) return
+    // optional but recommended
+
+    if (ticketID.length !== 24) {
+      setError("Invalid Ticket ID")
+      setTicketSearch(null)
+      return
+    }
+
+    try {
+      setTicketError("")
+      const res = await axios.get(`/tickets/${ticketID}`)
+      console.log(res.data)
+      setTicketSearch(res.data)
+    } catch (error) {
+      setTicketSearch(null)
+      setTicketError(
+        (error as any).response?.data?.message || "Ticket not Found"
+      )
+    }
+
+  }
 
 
   return (
@@ -196,13 +224,86 @@ export default function Home() {
               type="text"
               placeholder="Enter your Ticket Number"
               className="bg-white border-[#CE7F00] rounded-2xl h-10"
+              value={ticketID}
+              onChange={(e) => setTicketId(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  fetchTicket()
+                }
+              }}
             />
           </div>
         </div>
       </div>
 
+
+
       <div className="mx-5 md:mx-20">
-        <div className="flex justify-between items-center mb-5 ">
+          
+        {ticketError && (
+          <p className="text-red-500 text-sm">{error}</p>
+        )}
+
+        {ticketSearch && (
+          <div>
+            <div className="mb-3">
+              <h1 className="font-bold text-lg">
+                Ticket Number
+                <span className="text-2xl ms-2 text-green-600 font-extrabold">
+                  {ticketSearch._id}
+                </span>
+              </h1>
+            </div>
+
+          <Table>
+            <TableHeader className="bg-[#2aa8e3]">
+              <TableHead className="font-bold">Full Name</TableHead>
+              <TableHead className="font-bold">Email</TableHead>
+              <TableHead className="font-bold">Description</TableHead>              
+              <TableHead className="font-bold">Division</TableHead>
+              <TableHead className="font-bold">Category</TableHead>
+              <TableHead className="font-bold">Priority Status</TableHead> 
+              <TableHead className="font-bold">Schedule</TableHead>              
+              <TableHead className="font-bold">Created At</TableHead>              
+              <TableHead className="font-bold">Ticket Status</TableHead>              
+            </TableHeader>
+            <TableBody>
+              <TableRow className="font-semibold text-red-600">
+                <TableCell>{ticketSearch.userID.fullName}</TableCell>
+                <TableCell>{ticketSearch.email}</TableCell>
+                <TableCell>{ticketSearch.description}</TableCell>
+                <TableCell>{ticketSearch.division}</TableCell>
+                <TableCell>{ticketSearch.category}</TableCell>
+                <TableCell>{ticketSearch.priorityStatus}</TableCell>
+                <TableCell>
+                      {new Date(ticketSearch.scheduleDateTime).toLocaleString("en-PH", {
+                        month: "long",
+                        day: "2-digit",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}                  
+                </TableCell>
+                         <TableCell>
+                      {new Date(ticketSearch.createdAt).toLocaleString("en-PH", {
+                        month: "long",
+                        day: "2-digit",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}                  
+                </TableCell>
+                <TableCell>{ticketSearch.ticketStatus}</TableCell>
+                
+              </TableRow>
+            </TableBody>
+          </Table>
+          </div>
+        )}
+
+        <div className="flex justify-between items-center mb-5 mt-5 ">
           <h1 className="text-2xl font-bold">History</h1>
 
           <Button className="bg-[#E3B32A] hover:bg-[#d4a51f] text-black w-50 h-10 font-bold cursor-pointer " onClick={() => setOpen(true)}>
