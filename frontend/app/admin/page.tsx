@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "../config/axios";
+import { Eye, EyeOff } from "lucide-react"; 
 
 const AdminLogin = () => {
   const router = useRouter();
@@ -13,6 +14,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,16 +22,12 @@ const AdminLogin = () => {
     setLoading(true);
 
     console.log("Attempting login with:", { email, password });
-
     try {
       await axios.post("/admin/login", {
         email,
         password,
       });
 
-
-
-      // cookie is now set by backend
       router.push("/admin/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
@@ -65,14 +63,27 @@ const AdminLogin = () => {
 
           <div>
             <label className="block text-sm mb-1">Password</label>
-            <input
-              type="password"
-              className="w-full border rounded-lg px-3 py-2"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full border rounded-lg px-3 py-2 pr-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              {/* Eye icon */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
+
+
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
