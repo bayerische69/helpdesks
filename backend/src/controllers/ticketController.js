@@ -37,6 +37,124 @@ export async function getTicketsByID(req, res) {
 }
 
 
+export async function countTickets(req, res) {
+  try {
+    const stats = await Ticket.aggregate([
+      {
+        $group: {
+          _id: "$ticketStatus",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // base structure (prevents undefined)
+    const result = {
+      totalTickets: 0,
+      pendingTickets: 0,
+      inProgressTickets: 0,
+      closedReferredTickets: 0,
+      closedResolvedTickets: 0
+    };
+
+    stats.forEach(item => {
+      result.totalTickets += item.count;
+
+      switch (item._id) {
+        case "Pending":
+          result.pendingTickets = item.count;
+          break;
+        case "In Progress":
+          result.inProgressTickets = item.count;
+          break;
+        case "Closed - Referred to CMISID":
+          result.closedReferredTickets = item.count;
+          break;
+        case "Closed - Resolved":
+          result.closedResolvedTickets = item.count;
+          break;
+        default:
+          break;
+      }
+    });
+
+    res.status(200).json(result);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message
+    });
+  }
+}
+
+export async function getTicketsByDateAndDivision(req, res) {
+  try {
+    const data = await Ticket.aggregate([
+      {
+        $addFields: {
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt"
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            date: "$date",
+            division: "$division"
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        // group again by date
+        $group: {
+          _id: "$_id.date",
+          divisions: {
+            $push: {
+              k: "$_id.division",
+              v: "$count"
+            }
+          }
+        }
+      },
+      {
+        $addFields: {
+          divisions: {
+            $arrayToObject: "$divisions"
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          PSD: { $ifNull: ["$divisions.PSD", 0] },
+          ADMIN: { $ifNull: ["$divisions.ADMIN", 0] },
+          SUPPLY: { $ifNull: ["$divisions.SUPPLY", 0] },
+          RECORDS: { $ifNull: ["$divisions.RECORDS", 0] },
+          ARCHIVES: { $ifNull: ["$divisions.ARCHIVES", 0] }
+        }
+      },
+      {
+        $sort: { date: 1 }
+      }
+    ]);
+
+    res.status(200).json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message
+    });
+  }
+}
+
 
 export async function createTicket(req, res) {
     const { userID, email, priorityStatus, division, category, scheduleDateTime, description } = req.body
