@@ -5,7 +5,7 @@ import Admin from '../models/adminSchema.js';
 
 export async function getAllTickets(req, res) {
     try {
-        const tickets = await Ticket.find().sort({ createdAt: -1 }); // newest first
+        const tickets = await Ticket.find().sort({ createdAt: -1 }).populate("userID", "fullName"); // newest first
 
         res.status(200).json(tickets);
 

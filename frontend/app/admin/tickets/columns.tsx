@@ -29,11 +29,11 @@ export type Tickets = {
 
 export const columns: ColumnDef<Tickets>[] = [
     {
-        accessorKey: "id",
+        accessorKey: "_id",
         header: "ID",
     },
     {
-        accessorKey: "userID",
+        accessorKey: "userID.fullName",
         header: "Full Name"
     },
     {
@@ -101,7 +101,7 @@ export const columns: ColumnDef<Tickets>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-white" >
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(ticket.id)}>
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(ticket._id)}>
                         Copy ticket ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
