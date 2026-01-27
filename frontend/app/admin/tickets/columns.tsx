@@ -1,8 +1,8 @@
 'use client'
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
-import { ArrowUpDown } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { ArrowUpDown, Clipboard } from "lucide-react"
  
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +16,7 @@ import {
  
 
 export type Tickets = {
-    id: string,
+    _id: string,
     userID: string,
     email: string,
     priorityStatus: "Low" | "Medium" | "High" | "Urgent",
@@ -100,14 +100,21 @@ export const columns: ColumnDef<Tickets>[] = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-white" >
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(ticket._id)}>
-                        Copy ticket ID
+                        <DropdownMenuItem className="cursor-pointer text-yellow-700 hover:bg-amber-300" onClick={() => navigator.clipboard.writeText(ticket._id)}>
+                        <Pencil /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer text-red-700 hover:bg-red-300" onClick={() => navigator.clipboard.writeText(ticket._id)}>
+                        <Trash2 /> Delete
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer text-blue-700 hover:bg-blue-300" onClick={() => {
+                            navigator.clipboard.writeText(ticket._id)
+                            alert("Ticket ID copied to clipboard")
+                        }}>
+                        <Clipboard /> Copy ticket ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View Customer</DropdownMenuItem>
-                        <DropdownMenuItem>View Ticket Details</DropdownMenuItem>
-
+                        {/* <DropdownMenuItem>View Customer</DropdownMenuItem>
+                        <DropdownMenuItem>View Ticket Details</DropdownMenuItem> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
