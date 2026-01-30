@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
- 
+import Modal from '../../components/Modal'
+import { useState } from "react"
 
 export type Tickets = {
     _id: string,
@@ -26,6 +27,7 @@ export type Tickets = {
     description: string,
     ticketStatus: "Pending" | "In Progress" | "Closed - Referred to CMISID" | "Closed - Resolved",
 }
+
 
 export const columns: ColumnDef<Tickets>[] = [
     {
@@ -90,8 +92,11 @@ export const columns: ColumnDef<Tickets>[] = [
         id: "actions",
         cell: ({row}) => {
             const ticket = row.original
+            const [isOpen, setIsOpen] = useState(false)
+            const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
             return (
+                <div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild >
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -100,23 +105,37 @@ export const columns: ColumnDef<Tickets>[] = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-white" >
-                        <DropdownMenuItem className="cursor-pointer text-yellow-700 hover:bg-amber-300" onClick={() => navigator.clipboard.writeText(ticket._id)}>
+                        <DropdownMenuItem className="cursor-pointer text-yellow-700 hover:bg-amber-300" onClick={() => setIsOpen(true)}>
                         <Pencil /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer text-red-700 hover:bg-red-300" onClick={() => navigator.clipboard.writeText(ticket._id)}>
+                        <DropdownMenuItem className="cursor-pointer text-red-700 hover:bg-red-300" onClick={() => setIsDeleteOpen(true)}>
                         <Trash2 /> Delete
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer text-blue-700 hover:bg-blue-300" onClick={() => {
+                        {/* <DropdownMenuItem className="cursor-pointer text-blue-700 hover:bg-blue-300" onClick={() => {
                             navigator.clipboard.writeText(ticket._id)
                             alert("Ticket ID copied to clipboard")
                         }}>
                         <Clipboard /> Copy ticket ID
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuSeparator />
-                        {/* <DropdownMenuItem>View Customer</DropdownMenuItem>
-                        <DropdownMenuItem>View Ticket Details</DropdownMenuItem> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Ticket">
+                    <div>
+                        
+                    </div>
+                </Modal>
+                <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete Ticket">
+                    <div>
+                        <p>Are you sure you want to delete this ticket?</p>
+                        <Button variant="destructive" onClick={() => {
+                            // Delete ticket logic here
+                            setIsDeleteOpen(false)
+                        }}>Delete</Button>
+                    </div>
+                </Modal>
+                </div>
+
             )
         }
     },
