@@ -249,3 +249,23 @@ export async function updateTicketStatus(req, res) {
     }
 }
 
+export async function updateTicket(req, res) {
+  try {
+    const updatedTicket = await Ticket.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedTicket) {
+      return res.status(404).json({ message: "Ticket Not Found" });
+    }
+    res.status(200).json({
+      message: "Ticket Updated Successfully",
+      data: updatedTicket
+    });
+  } catch (error) {
+    console.error("Error updating ticket: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
+    
+  }
+}
