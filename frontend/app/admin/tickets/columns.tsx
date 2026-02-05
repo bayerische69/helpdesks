@@ -122,9 +122,18 @@ export const columns: ColumnDef<Tickets>[] = [
                 </DropdownMenu>
                 <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Ticket">
                     <div>
-                        
+                        <form className="w-full">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-medium mb-1">User</label>
+                                    
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </Modal>
+
+
                 <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete Ticket">
                     <div>
                         <p>Are you sure you want to delete this ticket?</p>
@@ -148,4 +157,3 @@ export const columns: ColumnDef<Tickets>[] = [
 // again
 
 // compliance next time
-// next time compliance

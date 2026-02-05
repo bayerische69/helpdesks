@@ -176,3 +176,6 @@ const UsersTable = () => {
 }
 
 export default UsersTable
+
+
+// to use this component, simply import and include <UsersTable /> in your desired location within the application.
