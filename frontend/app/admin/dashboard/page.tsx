@@ -15,6 +15,7 @@ const dashboard = () => {
 
         const response = await axios.get('/tickets/count/status')
         setCountStatus(response.data)
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching dashboard stats:', error)
       }
@@ -38,7 +39,7 @@ const dashboard = () => {
             </div>
             <div className="bg-gray-600 rounded-xl shadow-md p-6 text-center font-semibold hover:shadow-lg transition text-white">
 
-              <h1 className='font-bold text-4xl' >{countStatus?.closedReferredToCMISID || 0}</h1>
+              <h1 className='font-bold text-4xl' >{countStatus?.closedReferredTickets || 0}</h1>
 
               <p>Closed - Referred to CMISID</p>
             </div>
@@ -59,7 +60,7 @@ const dashboard = () => {
 
             <div className="bg-[#2EA10D] rounded-xl shadow-md p-6 text-center font-semibold hover:shadow-lg transition text-white">
 
-              <h1 className='font-bold text-4xl' >{countStatus?.closedResolved || 0}</h1>
+              <h1 className='font-bold text-4xl' >{countStatus?.closedResolvedTickets || 0}</h1>
 
               <p>Closed - Resolved</p>
             </div>

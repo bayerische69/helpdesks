@@ -120,15 +120,38 @@ export const columns: ColumnDef<Tickets>[] = [
                         <DropdownMenuSeparator />
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Ticket">
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Ticket Status">
                     <div>
                         <form className="w-full">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                                <div className="flex flex-col">
-                                    <label className="text-sm font-medium mb-1">User</label>
-                                    
-                                </div>
-                            </div>
+                            <div className="flex flex-col mb-3">
+                                    <select
+                                    className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                    <option value="" disabled>
+                                        Select a Ticket Status
+                                    </option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Closed - Referred to CMISID">Closed - Referred to CMISID</option>
+                                    <option value="Closed - Resolved">Closed - Resolved</option>
+                                    </select>
+                            </div>           
+
+                            <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+                            <Button
+                                variant="outline"
+                                className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
+                            >
+                                Submit
+                            </Button>
+                            </div>                   
                         </form>
                     </div>
                 </Modal>
@@ -137,10 +160,25 @@ export const columns: ColumnDef<Tickets>[] = [
                 <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete Ticket">
                     <div>
                         <p>Are you sure you want to delete this ticket?</p>
-                        <Button variant="destructive" onClick={() => {
-                            // Delete ticket logic here
-                            setIsDeleteOpen(false)
-                        }}>Delete</Button>
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+                            <Button
+                                variant="outline"
+                                className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
+                                onClick={() => {
+                                    setIsDeleteOpen(false)
+                                }}                                
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
+
+                            >
+                                Submit
+                            </Button>
+                        </div>                           
                     </div>
                 </Modal>
                 </div>

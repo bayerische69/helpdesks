@@ -3,8 +3,9 @@
 import React, { useState } from 'react'
 import logo from "../images/Logo.png"
 import Image from 'next/image'
-import { Bell, Settings, LayoutDashboard, Ticket, Menu, X } from "lucide-react"
+import { Bell, Settings, LayoutDashboard, Ticket, Menu, X, LogOut } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
+import axios from '../config/axios'
 
 const AdminHeader = () => {
 
@@ -13,6 +14,22 @@ const AdminHeader = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [showNotif, setShowNotif] = useState(false)
   const [showMobileNotif, setShowMobileNotif] = useState(false)
+
+  const handleLogout = async () => {
+
+    try {
+      await axios.post(
+        "/admin/logout",
+        {},
+        { withCredentials: true } // 👈 VERY important
+      );
+
+      router.push("/admin");
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+  }
+
 
   const navItems = [
     {
@@ -66,7 +83,7 @@ const AdminHeader = () => {
           ))}
 
         {/* Notification */}
-        <div className="relative mt-2">
+        {/* <div className="relative mt-2">
 
           <button
             onClick={() => setShowNotif(!showNotif)}
@@ -79,7 +96,6 @@ const AdminHeader = () => {
             </span>
           </button>
 
-          {/* Dropdown */}
           {showNotif && (
             <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-3 z-50">
 
@@ -115,7 +131,17 @@ const AdminHeader = () => {
 
             </div>
           )}
-        </div>
+        </div> */}
+
+          <div className="relative mt-2">
+            <button
+              className="relative cursor-pointer"
+              onClick={handleLogout}
+            >
+              <LogOut className="text-black-600 font-bold" />
+
+            </button>            
+          </div>
 
 
         </div>

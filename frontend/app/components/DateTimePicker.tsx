@@ -15,7 +15,7 @@ import {
 
 export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState(null)
+  const [date, setDate] = React.useState<Date | null>(null)
   const [time, setTime] = React.useState("10:30:00")
 
   const today = React.useMemo(() => {
@@ -31,7 +31,7 @@ export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }
     const [hours, minutes, seconds] = time.split(":")
     const combined = new Date(date)
 
-    combined.setHours(hours, minutes, seconds || 0)
+    combined.setHours(Number(hours), Number(minutes), Number(seconds || 0))
 
     onChange?.(combined) // send to parent
   }, [date, time])
@@ -57,10 +57,10 @@ export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }
           <PopoverContent className="w-auto p-0 bg-white">
             <Calendar
               mode="single"
-              selected={date}
+              selected={date || undefined}
               disabled={{ before: today }}
               onSelect={(d) => {
-                setDate(d)
+                setDate(d || null)
                 setOpen(false)
               }}
             />
