@@ -288,6 +288,3 @@ export async function updateTicket(req, res) {
     
   }
 }
-
-// compliance again
-// compliance again and again
