@@ -13,7 +13,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }) {
+export function DateTimePicker({
+  onChange,
+  existingSchedules = [],
+}: {
+  onChange?: (date: Date) => void
+  existingSchedules?: string[]
+})
+ {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState<Date | null>(null)
   const [time, setTime] = React.useState("10:30:00")
@@ -24,17 +31,39 @@ export function DateTimePicker({ onChange }: { onChange?: (date: Date) => void }
     return d
   }, [])
 
-  // Combine date + time
-  React.useEffect(() => {
-    if (!date || !time) return
+const isDateTimeTaken = React.useCallback(
+  (selectedDate: Date) => {
+    const selectedISO = selectedDate.toISOString()
 
-    const [hours, minutes, seconds] = time.split(":")
-    const combined = new Date(date)
+    return existingSchedules.some((isoString) => {
+      return isoString === selectedISO
+    })
+  },
+  [existingSchedules]
+)
 
-    combined.setHours(Number(hours), Number(minutes), Number(seconds || 0))
 
-    onChange?.(combined) // send to parent
-  }, [date, time])
+
+React.useEffect(() => {
+  if (!date || !time) return
+
+  const [hours, minutes, seconds] = time.split(":")
+  const combined = new Date(date)
+  combined.setHours(Number(hours), Number(minutes), Number(seconds || 0))
+
+  const selectedISO = combined.toISOString()
+
+  if (existingSchedules.includes(selectedISO)) {
+    console.log("Schedule taken")
+    return
+  }
+
+  onChange?.(combined)
+}, [date, time, existingSchedules])
+
+console.log("Selected ISO:", combined.toISOString())
+
+  console.log("Existing:", existingSchedules)
 
   return (
     <div className="flex flex-col sm:flex-row gap-4">

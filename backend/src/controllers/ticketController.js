@@ -35,7 +35,7 @@ export async function getTicketsByID(req, res) {
   }
 }
 
-export async function getTicketSchedules(regq, res) {
+export async function getTicketSchedules(req, res) {
   try {
     const schedules = await Ticket.find(
       {},

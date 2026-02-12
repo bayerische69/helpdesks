@@ -5,11 +5,11 @@ const router = express.Router();
 
 router.get('/', getAllTickets);
 router.get('/getTicketSchedules', getTicketSchedules);
-router.get('/:id', getTicketsByID);
 router.post('/', createTicket);
-router.put('/:id', updateTicketStatus);
 router.get('/count/status', countTickets);
 router.get('/chart/status', getTicketsByDateAndDivision);
+router.get('/:id', getTicketsByID);
+router.put('/:id', updateTicketStatus);
 
 export default router;
 
