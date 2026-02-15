@@ -127,9 +127,29 @@ export default function Home() {
       setOpen(false)
       window.location.reload();
 
-    } catch (error) {
-      console.error("Error submitting tickets", error)
-      alert("Failed to submit ticket.")
+    } catch (error: any) {
+      const data = error.response?.data
+
+      // If backend sent response
+      if (error.response) {
+        const data = error.response.data;
+
+        // If schedule is taken
+        if (data.available === false) {
+          const slots = data.nextAvailableSchedules
+            ?.map((d: string) => new Date(d).toLocaleString())
+            .join("\n");
+
+          alert(
+            `${data.message}\n\nNext Available Slots:\n${slots}`
+          );
+          return;
+        }
+
+        alert(data.message || "Failed to submit ticket.");
+      } else {
+        alert("Network error. Please try again.");
+      }
 
     }
 
@@ -566,7 +586,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-// compliance: 100% original, no plagiarism, written from scratch by me
-// compliance napud

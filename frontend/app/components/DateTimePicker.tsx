@@ -61,7 +61,6 @@ React.useEffect(() => {
   onChange?.(combined)
 }, [date, time, existingSchedules])
 
-console.log("Selected ISO:", combined.toISOString())
 
   console.log("Existing:", existingSchedules)
 

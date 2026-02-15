@@ -175,8 +175,74 @@ export async function getTicketsByDateAndDivision(req, res) {
 }
 
 
+// export async function createTicket(req, res) {
+//     const { userID, email, priorityStatus, division, category, scheduleDateTime, description } = req.body
+
+//     if (!userID || !email || !division || !category || !scheduleDateTime || !description) {
+//         return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     const scheduledDate = new Date(scheduleDateTime);
+//     const now = new Date();
+
+//     // 🔴 Invalid date check
+//     if (isNaN(scheduledDate.getTime())) {
+//         return res.status(400).json({ message: "Invalid schedule date format" });
+//     }
+
+//     // 🔴 Past date check
+//     if (scheduledDate <= now) {
+//         return res.status(400).json({
+//             message: "Schedule date and time must be in the future"
+//         });
+//     }
+
+
+//     try {
+
+//         const newTicket = new Ticket({
+//             userID,
+//             email,
+//             priorityStatus,
+//             division,
+//             category,
+//             scheduleDateTime,
+//             description
+//         })
+
+//         await newTicket.save();
+
+//         res.status(201).json({
+//             message: "Ticket Created Successfully",
+//             data: newTicket
+//         });
+
+//         // Send email notification to user
+//         const mailOptions = {
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: 'Ticket Created Successfully',
+//             text: `Your ticket with ID ${newTicket._id} has been created successfully. We will get back to you shortly.`
+//         }
+
+//         // Send email notification to admin
+//         const mailOptions2 = {
+//             from: process.env.EMAIL_USER,
+//             to: process.env.EMAIL_USER,
+//             subject: 'New Ticket Created',
+//             text: `A new ticket with ID ${newTicket._id} has been created by user with email ${email}. Please check the admin panel for more details.`
+//         }
+
+//         await transporter.sendMail(mailOptions);
+//         await transporter.sendMail(mailOptions2);
+
+//     } catch (error) {
+//         console.error("Error creating ticket: ", error);
+//     }
+// }
+
 export async function createTicket(req, res) {
-    const { userID, email, priorityStatus, division, category, scheduleDateTime, description } = req.body
+    const { userID, email, priorityStatus, division, category, scheduleDateTime, description } = req.body;
 
     if (!userID || !email || !division || !category || !scheduleDateTime || !description) {
         return res.status(400).json({ message: "All fields are required" });
@@ -185,59 +251,84 @@ export async function createTicket(req, res) {
     const scheduledDate = new Date(scheduleDateTime);
     const now = new Date();
 
-    // 🔴 Invalid date check
     if (isNaN(scheduledDate.getTime())) {
         return res.status(400).json({ message: "Invalid schedule date format" });
     }
 
-    // 🔴 Past date check
     if (scheduledDate <= now) {
         return res.status(400).json({
             message: "Schedule date and time must be in the future"
         });
     }
 
-
     try {
+        // 🔴 Check if slot already booked
+        const existingSchedule = await Ticket.findOne({
+            scheduleDateTime: scheduledDate
+        });
 
+        if (existingSchedule) {
+
+            // Get all future booked times
+            const booked = await Ticket.find({
+                scheduleDateTime: { $gte: now }
+            }).select("scheduleDateTime");
+
+            const bookedTimes = booked.map(t =>
+                new Date(t.scheduleDateTime).getTime()
+            );
+
+            // ✅ Generate next available 15-min slots
+            const availableSlots = [];
+            let start = new Date();
+
+            // Round to nearest 15 mins
+            const minutes = start.getMinutes();
+            const rounded = Math.ceil(minutes / 15) * 15;
+            start.setMinutes(rounded, 0, 0);
+
+            for (let i = 0; i < 100; i++) {
+                const time = start.getTime();
+
+                if (!bookedTimes.includes(time) && time > now.getTime()) {
+                    availableSlots.push(new Date(time));
+                }
+
+                if (availableSlots.length === 5) break;
+
+                // move forward 15 minutes
+                start.setMinutes(start.getMinutes() + 15);
+            }
+
+            return res.status(409).json({
+                message: "Selected schedule date and time is already taken.",
+                available: false,
+                nextAvailableSchedules: availableSlots
+            });
+        }
+
+        // ✅ Create ticket if slot is free
         const newTicket = new Ticket({
             userID,
             email,
             priorityStatus,
             division,
             category,
-            scheduleDateTime,
+            scheduleDateTime: scheduledDate,
             description
-        })
+        });
 
         await newTicket.save();
 
         res.status(201).json({
             message: "Ticket Created Successfully",
-            data: newTicket
+            data: newTicket,
+            available: true
         });
 
-        // Send email notification to user
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Ticket Created Successfully',
-            text: `Your ticket with ID ${newTicket._id} has been created successfully. We will get back to you shortly.`
-        }
-
-        // Send email notification to admin
-        const mailOptions2 = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER,
-            subject: 'New Ticket Created',
-            text: `A new ticket with ID ${newTicket._id} has been created by user with email ${email}. Please check the admin panel for more details.`
-        }
-
-        await transporter.sendMail(mailOptions);
-        await transporter.sendMail(mailOptions2);
-
     } catch (error) {
-        console.error("Error creating ticket: ", error);
+        console.error("Error creating ticket:", error);
+        res.status(500).json({ message: "Server Error" });
     }
 }
 
