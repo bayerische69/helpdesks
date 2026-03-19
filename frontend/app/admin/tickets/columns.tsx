@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { ArrowUpDown, Clipboard } from "lucide-react"
+import axios from '../../config/axios'
  
 import { Button } from "@/components/ui/button"
 import {
@@ -94,6 +95,28 @@ export const columns: ColumnDef<Tickets>[] = [
             const ticket = row.original
             const [isOpen, setIsOpen] = useState(false)
             const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+            const [status, setStatus] = useState(ticket?.ticketStatus || "")
+
+
+            const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+                e.preventDefault()
+
+                try {
+                    const res = await axios.put(`/tickets/${ticket._id}`, {
+                        ticketStatus: status
+                    })
+                        if (res.status === 200) {
+                            alert("Ticket status updated successfully")
+                            setIsOpen(false)
+                            window.location.reload()
+                        } else {
+                            alert("Failed to update ticket status")
+                        }
+                } catch (error) {
+                    console.error("Error updating ticket status:", error)
+                }
+
+            }
 
             return (
                 <div>
@@ -122,10 +145,11 @@ export const columns: ColumnDef<Tickets>[] = [
                 </DropdownMenu>
                 <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Ticket Status">
                     <div>
-                        <form className="w-full">
+                        <form onSubmit={handleSubmit} className="w-full">
                             <div className="flex flex-col mb-3">
                                     <select
                                     className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onChange={(e) => setStatus(e.target.value as "Pending" | "In Progress" | "Closed - Referred to CMISID" | "Closed - Resolved")}
                                     >
                                     <option value="" disabled>
                                         Select a Ticket Status

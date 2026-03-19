@@ -587,10 +587,3 @@ export default function Home() {
   );
 }
 
-
-// compliance
-// compliance 2
-// compliance napud
-// compliance nasab hahah
-// compliance gihapon
-// compliance again
