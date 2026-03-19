@@ -26,13 +26,17 @@ interface User {
 
 const UsersTable = () => {
   const [open, setOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [openEdit, setOpenEdit] = useState(false)
   const [users, setUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [fullName, setFullName] = useState('')
+  
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get('/users')
+      console.log('Fetched users:', response.data)
       setUsers(response.data)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -57,6 +61,7 @@ const UsersTable = () => {
 
     try {
       const response = await axios.post('/users', { fullName })
+      
       setFullName('')
       setOpen(false)
       await fetchUsers() 
@@ -106,7 +111,11 @@ const UsersTable = () => {
                     size="sm"
                     variant="outline"
                     className="text-blue-600 hover:bg-blue-300 cursor-pointer"
-                    onClick={() => console.log("Edit user:", user.fullName)}
+                    // onClick={() => console.log("Edit user:", user.fullName)}
+                    onClick={() => {
+                      setSelectedUser(user._id) // ✅ store clicked user
+                      setOpenEdit(true)
+                    }}
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
@@ -186,6 +195,15 @@ const UsersTable = () => {
 
 
         </Modal>
+
+        <Modal
+          isOpen={openEdit}
+          onClose={() => setOpenEdit(false)}
+          title='Edit User'
+        >
+          
+        </Modal>
+              
 
     </div>
   )
