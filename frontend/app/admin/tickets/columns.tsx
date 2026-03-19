@@ -118,6 +118,20 @@ export const columns: ColumnDef<Tickets>[] = [
 
             }
 
+            const handleDelete = async () => {
+                try {
+                    const res = await axios.delete(`/tickets/delete/${ticket._id}`)
+                    if (res.status === 200) {
+                        alert("Ticket deleted successfully")
+                        window.location.reload()
+                    } else {
+                        alert("Failed to delete ticket")
+                    }
+                } catch (error) {
+                    console.error("Error deleting ticket:", error)
+                }
+            }
+
             return (
                 <div>
                 <DropdownMenu>
@@ -198,7 +212,7 @@ export const columns: ColumnDef<Tickets>[] = [
                             <Button
                                 variant="outline"
                                 className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
-
+                                onClick={handleDelete}
                             >
                                 Submit
                             </Button>

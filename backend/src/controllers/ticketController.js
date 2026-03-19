@@ -379,3 +379,21 @@ export async function updateTicket(req, res) {
     
   }
 }
+
+export async function deleteTicket(req, res) {
+    try {
+        const deleteTicket = await Ticket.findByIdAndDelete(req.params.id);
+
+        if (!deleteTicket) return res.status(404).json({ message: "Ticket Not Found" });
+
+        res.status(200).json({
+            message: "User Deleted Successfully",
+        });
+
+    } catch (error) {
+        console.log("Error deleting ticket: ", error);
+        res.status(500).json({
+            message: "Internal Server Error",
+        })
+    }
+}
