@@ -4,7 +4,7 @@ import User from "../models/userSchema.js";
 const rateLimiter = async (req, res, next) => {
 
     try {
-        const { success } = await rateLimit.limit(User.id);
+        const { success } = await rateLimit.limit();
         if (!success) {
             return res.status(429).json({
                 message: "Too many requests, please try again later."

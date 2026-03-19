@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import Modal from './Modal'
+import axios from '../config/axios'
 
 import {
   Table,
@@ -16,32 +17,54 @@ import {
 } from "@/components/ui/table"
 import { Input } from '@/components/ui/input'
 
-const Users = [
-  { fullName: "John Doe" },
-  { fullName: "Jane Smith" },
-  { fullName: "Michael Johnson" },
-  { fullName: "Emily Davis" },
-  { fullName: "Robert Brown" },
-  { fullName: "Sarah Wilson" },
-  { fullName: "David Martinez" },
-  { fullName: "Laura Anderson" },
-  { fullName: "James Taylor" },
-  { fullName: "Olivia Thomas" }
-]
 
 const ITEMS_PER_PAGE = 10
 
+interface User {
+  fullName: string
+}
+
 const UsersTable = () => {
   const [open, setOpen] = useState(false)
-  
+  const [users, setUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [fullName, setFullName] = useState('')
 
-  const totalPages = Math.ceil(Users.length / ITEMS_PER_PAGE)
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/users')
+      setUsers(response.data)
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  },[])  
+
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE)
+
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const paginatedUsers = Users.slice(
+
+  const paginatedUsers = users.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   )
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('/users', { fullName })
+      setFullName('')
+      setOpen(false)
+      await fetchUsers() 
+    } catch (e) {
+      console.error('Error adding user:', e)
+    }
+  
+  }
 
   return (
     <div>
@@ -59,9 +82,9 @@ const UsersTable = () => {
 
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">No.</TableHead>
+            <TableHead className="w-12.5">No.</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead className="w-[100px]">Action</TableHead>
+            <TableHead className="w-12.5">Action</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -132,40 +155,33 @@ const UsersTable = () => {
         title='Add User'>
 
                   
-        <form className="w-full">
-          {/* Row 1 */}
+        <form onSubmit={handleSubmit} className="w-full">
 
             <div className="flex flex-col mb-3">
               <label className="text-sm font-medium mb-2">Full Name
               </label>
-              <Input type="text" placeholder="Enter Full Name" />
+              <Input type="text" placeholder="Enter Full Name" onChange={(e) => setFullName(e.target.value)} />
             </div>
+            
+            <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+              <Button
+                variant="outline"
+                className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setOpen(false)
+                }}
+              >
+                Cancel
+              </Button>
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
-            <Button
-              variant="outline"
-              className="bg-[#BF092F] text-white w-full sm:w-auto cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault()
-                setOpen(false)
-              }}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="outline"
-              className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault()
-                alert("Submitted Successfully")
-                setOpen(false)
-              }}
-            >
-              Submit
-            </Button>
-          </div>
+              <Button
+                variant="outline"
+                className="bg-[#4988C4] text-white w-full sm:w-auto cursor-pointer"
+              >
+                Submit
+              </Button>
+            </div>
         </form>
 
 
@@ -176,6 +192,3 @@ const UsersTable = () => {
 }
 
 export default UsersTable
-
-
-// to use this component, simply import and include <UsersTable /> in your desired location within the application.
