@@ -326,6 +326,70 @@ export async function createTicket(req, res) {
             available: true
         });
 
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: 'Ticket Created',
+          html: `
+          <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 40px 0;">
+            <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; text-align: center;">
+
+              <h2 style="margin-bottom: 10px; color: #222;">Ticket Created</h2>
+              
+              <p style="color: #555; font-size: 14px; margin-bottom: 25px;">
+                Your request has been received.
+              </p>
+
+              <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 25px;">
+                #${newTicket._id}
+              </div>
+
+              <p style="color: #777; font-size: 13px;">
+                We’ll get back to you shortly.
+              </p>
+
+            </div>
+          </div>
+          `
+        };
+
+        const mailOptions2 = {
+          from: process.env.EMAIL_USER,
+          to: process.env.EMAIL_USER,
+          subject: 'New Ticket Created',
+          html: `
+          <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 40px 0;">
+            <div style="max-width: 520px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden;">
+
+              <!-- Top Accent -->
+              <div style="height: 4px; background: #000;"></div>
+
+              <div style="padding: 30px;">
+                
+                <h2 style="margin-bottom: 20px; color: #222;">New Ticket</h2>
+
+                <p style="color: #555; font-size: 14px; margin-bottom: 20px;">
+                  A new support ticket has been submitted.
+                </p>
+
+                <!-- Info Block -->
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; font-size: 14px; color: #333;">
+                  <p style="margin: 0 0 8px;"><strong>Ticket ID:</strong> ${newTicket._id}</p>
+                  <p style="margin: 0;"><strong>User Email:</strong> ${email}</p>
+                </div>
+
+                <p style="color: #777; font-size: 13px; margin-top: 25px;">
+                  Check the admin panel for full details.
+                </p>
+
+              </div>
+            </div>
+          </div>
+          `
+        };
+        await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions2);
+
     } catch (error) {
         console.error("Error creating ticket:", error);
         res.status(500).json({ message: "Server Error" });
